@@ -1,5 +1,35 @@
 version: '3.1'
 
 services:
+  web:
+    image: nginx:1.24.0-alpine
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+      - nginx.env
+      - wordpress.env
+    volumes:
+      - ./templates/nginx:/etc/nginx/templates
+      - wordpress:/var/www/html
   wordpress:
     build: ./ovr-wordpress
+    restart: always
+    env_file:
+      - ./wordpress.env
+    volumes:
+      - wordpress:/var/www/html
+      - ./ovrride/wp-content:/var/www/html/wp-content
+      - ./wp-config-extra.php:/var/www/html/wp-config-extra.php
+  db:
+    image: mysql:5.7
+    restart: always
+    env_file:
+      - nginx.env
+      - wordpress.env
+    volumes:
+      - db:/var/lib/mysql
+      - ./ovrride.sql:/docker-entrypoint-initdb.d
+volumes:
+  wordpress:
+  db:

@@ -2,3 +2,4 @@
 /ovrride/
 .env
 /sql/
+wordpress.env

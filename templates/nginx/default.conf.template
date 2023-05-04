@@ -5,7 +5,7 @@ server {
         index index.php;
         large_client_header_buffers 4 16k;
         server_name ${NGINX_SERVER_NAME};
-        include php.conf;
+        
         location /status {
                 auth_basic "Restricted: ";
                 auth_basic_user_file /etc/nginx/.htpasswd;
@@ -22,7 +22,14 @@ server {
                 fastcgi_read_timeout 300;
                 try_files $uri $uri/ /index.php?$args;
         }
-
+        location ~ \.php$ {
+            fastcgi_keep_conn on;
+            fastcgi_pass ${NGINX_PHP_PASS};
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_read_timeout 180;
+            include        fastcgi_params;
+        }
         location ~ /favicon.ico {
                 access_log off;
                 log_not_found off;
