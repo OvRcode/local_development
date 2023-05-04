@@ -1,0 +1,46 @@
+server {
+        listen ${NGINX_PORT} default_server;
+
+        root ${NGINX_ROOT_DIR};
+        index index.php;
+        large_client_header_buffers 4 16k;
+        server_name ${NGINX_SERVER_NAME};
+        include php.conf;
+        location /status {
+                auth_basic "Restricted: ";
+                auth_basic_user_file /etc/nginx/.htpasswd;
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+                log_not_found off;
+        }
+        location / {
+                rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.xml$ "/index.php?xml_sitemap=params=$2" last;
+                rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.xml\.gz$ "/index.php?xml_sitemap=params=$2;zip=true" last;
+                rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.html$ "/index.php?xml_sitemap=params=$2;html=true" last;
+                rewrite ^/sitemap(-+([a-zA-Z0-9_-]+))?\.html.gz$ "/index.php?xml_sitemap=params=$2;html=true;zip=true" last;
+                fastcgi_read_timeout 300;
+                try_files $uri $uri/ /index.php?$args;
+        }
+
+        location ~ /favicon.ico {
+                access_log off;
+                log_not_found off;
+                expires 30d;
+        }
+        # Block dotfiles
+        location ~ /\. {
+                deny all;
+                access_log off;
+                log_not_found off;
+        }
+        
+        # Block vagrant + chef files
+        location ~^/(Vagrantfile.chef|Vagrantfile|README.md|package.json|Gemfile|Gemfile.lock|.*sql) {
+                return 444;
+        }
+
+        location ~^/(chef|cookbooks|data_bags|environments|node_modules|roles|site-cookbooks|tmp) {
+                return 444;
+        }
+}
