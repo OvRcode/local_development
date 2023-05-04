@@ -1,0 +1,31 @@
+FROM wordpress:6.2.0-php8.2-fpm
+RUN /usr/local/bin/docker-php-source extract
+
+# Install other needed extensions
+#RUN apt-get update && apt-get install -y libsqlite3-dev libfreetype6 libjpeg62-turbo libmcrypt4 libpng16-16 sendmail --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN buildDeps=" \
+        libsqlite3-dev \
+        libfreetype6 \
+        libjpeg62-turbo \
+        libmcrypt4 \
+        libpng16-16 \
+        sendmail \
+		libfreetype6-dev \
+		libjpeg-dev \
+		libldap2-dev \
+		libmcrypt-dev \
+		libpng-dev \
+		zlib1g-dev \
+        libonig-dev \
+        libzip-dev \
+        libmemcached-dev \
+	"; \
+	set -x \
+	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* 
+
+    RUN docker-php-ext-configure gd  --with-jpeg=/usr/include  --with-freetype=/usr/include 
+	RUN docker-php-ext-install gd ldap mbstring mysqli pdo_mysql pdo_sqlite zip 
+    RUN pecl install mcrypt memcached && docker-php-ext-enable mcrypt memcached
+    RUN docker-php-source delete
+    #RUN pecl install memcached && docker-php-ext-enable memcached
+	#&& apt-get purge -y --auto-remove $buildDeps && apt-get clean
