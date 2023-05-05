@@ -1,7 +1,6 @@
 .DS_Store
-/ovrride/
-.env
-/sql/
-wordpress.env
-/haproxy/ssl
-!/haproxy/ssl/.gitkeep
+/ovrride
+/.env
+/sql
+/wordpress.env
+/ssl/*.pem
