@@ -20,7 +20,6 @@ services:
     volumes:
       - wordpress:/var/www/html
       - ./ovrride/wp-content:/var/www/html/wp-content
-      - ./wp-config-extra.php:/var/www/html/wp-config-extra.php
   db:
     image: mysql:5.7
     restart: always
@@ -29,7 +28,7 @@ services:
       - wordpress.env
     volumes:
       - db:/var/lib/mysql
-      - ./ovrride.sql:/docker-entrypoint-initdb.d
+      - ./sql/ovrride.sql:/docker-entrypoint-initdb.d/ovrride.sql
 volumes:
   wordpress:
   db:
