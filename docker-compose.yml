@@ -1,17 +1,24 @@
 version: '3.1'
 
 services:
-  web:
-    image: nginx:1.24.0-alpine
+  haproxy:
+    image: haproxy:2.7.8-bullseye
     ports:
       - 80:80
       - 443:443
+      - 1936:1936
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ./haproxy/ssl:/usr/local/etc/haproxy/certs
+  web:
+    image: nginx:1.24.0-alpine
     env_file:
       - nginx.env
       - wordpress.env
     volumes:
       - ./templates/nginx:/etc/nginx/templates
       - wordpress:/var/www/html
+      - ./ovrride/wp-content:/var/www/html/wp-content
   wordpress:
     build: ./ovr-wordpress
     restart: always
@@ -28,7 +35,8 @@ services:
       - wordpress.env
     volumes:
       - db:/var/lib/mysql
-      - ./sql/ovrride.sql:/docker-entrypoint-initdb.d/ovrride.sql
+      - ./sql/ovrride.sql:/docker-entrypoint-initdb.d/01-ovrride.sql
+      - ./sql/dev.sql:/docker-entrypoint-initdb.d/02-dev.sql
 volumes:
   wordpress:
   db:
