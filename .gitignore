@@ -1,7 +1,9 @@
 .DS_Store
 /ovrride
+/ovr_lists
 /.env
 /sql/*.sql
 /sql/*.sql.gz
 /wordpress.env
 /ssl/*.pem
+/lists.env

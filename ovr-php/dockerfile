@@ -1,0 +1,37 @@
+FROM php:5.6-fpm-alpine
+RUN /usr/local/bin/docker-php-source extract
+RUN apk update && apk upgrade && apk add sqlite-dev \
+freetype-dev \
+libjpeg-turbo-dev \
+libmcrypt-dev \
+libpng-dev \
+ldb-dev \
+libldap \
+openldap-dev \
+zlib-dev \
+oniguruma \
+libzip-dev \
+libmemcached-dev \
+libxml2-dev  \
+php5-mcrypt \
+g++ \
+make  \
+autoconf
+
+
+RUN docker-php-ext-configure gd  --with-jpeg=/usr/include  --with-freetype=/usr/include  && \
+docker-php-ext-install gd ldap mbstring mcrypt mysqli pdo_mysql pdo_sqlite zip soap && \
+pecl channel-update pecl.php.net && \
+pecl install memcached-2.2.0 && docker-php-ext-enable memcached && \
+docker-php-source delete
+
+# Setup timezone to Eastern Standard Time, max upload size to 100M and sessions to redis
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini && \
+sed -i'' 's/^;\(date.timezone.*\)/\1 \"America\/New_York"/' /usr/local/etc/php/php.ini && \
+sed -i'' 's/^\(upload_max_filesize\s*=\s*\).*\$/\1100M/' /usr/local/etc/php/php.ini && \
+sed -i'' 's/^\(post_max_size\s*=\s*\).*\$/\1100M/' /usr/local/etc/php/php.ini && \
+sed -i'' 's/^session.save_handler.*$/session.save_handler = memcached/' /usr/local/etc/php/php.ini && \
+sed -i'' "s/^;session.save_path.*/session.save_path = 'memcached:11211'/" /usr/local/etc/php/php.ini && \
+sed -i'' 's/^pm.max_children.*/pm.max_children = 20/' /usr/local/etc/php-fpm.d/www.conf && \
+/usr/local/bin/docker-php-source delete
+

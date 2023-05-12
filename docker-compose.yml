@@ -11,7 +11,20 @@ services:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
       - ./ssl:/usr/local/etc/haproxy/certs
   memcached:
-    image: memcached:1.6-bullseye
+    image: memcached:1.6-alpine
+  lists:
+    image: nginx:1.24.0-alpine
+    env_file:
+      - lists.env
+    volumes:
+      - ./templates/lists:/etc/nginx/templates
+      - ./ovr_lists:/var/www/html
+  php:
+    build: ./ovr-php
+    env_file:
+      - lists.env
+    volumes:
+      - ./ovr_lists:/var/www/html
   web:
     image: nginx:1.24.0-alpine
     env_file:
