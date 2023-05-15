@@ -19,8 +19,14 @@ services:
     volumes:
       - ./templates/lists:/etc/nginx/templates
       - ./ovr_lists:/var/www/html
-  php:
-    build: ./ovr-php
+  php8.2:
+    build: ./php8.2
+    env_file:
+      - lists.env
+    volumes:
+      - ./ovr_lists:/var/www/html
+  php7.1:
+    build: ./php7.1
     env_file:
       - lists.env
     volumes:
