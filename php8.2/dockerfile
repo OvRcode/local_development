@@ -3,7 +3,6 @@ RUN /usr/local/bin/docker-php-source extract
 RUN apk update && apk upgrade && apk add sqlite-dev \
 freetype-dev \
 libjpeg-turbo-dev \
-libmcrypt-dev \
 libpng-dev \
 ldb-dev \
 libldap \
