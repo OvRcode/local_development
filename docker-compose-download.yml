@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  img:
+      build: ./do-aws
+      command: --skip-existing --progress sync s3://ovr-dev/2023 /uploads/2023
+      volumes:
+        - ./ovrride/wp-content/uploads:/uploads
+  dbb:
+      build: ./do-aws
+      command: sync s3://ovr-backups/ovrride-current.sql.gz /sql/
+      volumes:
+      - ./sql:/sql

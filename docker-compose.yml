@@ -25,12 +25,6 @@ services:
       - lists.env
     volumes:
       - ./ovr_lists:/var/www/html
-  php7.1:
-    build: ./php7.1
-    env_file:
-      - lists.env
-    volumes:
-      - ./ovr_lists:/var/www/html
   web:
     image: nginx:1.24.0-alpine
     env_file:
@@ -56,7 +50,7 @@ services:
       - wordpress.env
     volumes:
       - db:/var/lib/mysql
-      - ./sql/ovrride.sql:/docker-entrypoint-initdb.d/01-ovrride.sql
+      - ./sql/ovrride-current.sql.gz:/docker-entrypoint-initdb.d/01-ovrride.sql.gz
       - ./sql/dev.sql:/docker-entrypoint-initdb.d/02-dev.sql
 volumes:
   wordpress:
