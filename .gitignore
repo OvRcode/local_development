@@ -7,4 +7,4 @@
 /wordpress.env
 /ssl/*.pem
 /lists.env
-/DO-AWS/s3cfg
+/do-aws/s3cfg
