@@ -48,6 +48,7 @@ services:
     env_file:
       - nginx.env
       - wordpress.env
+    command: mysqld --sql_mode=""
     volumes:
       - db:/var/lib/mysql
       - ./sql/ovrride-current.sql.gz:/docker-entrypoint-initdb.d/01-ovrride.sql.gz
