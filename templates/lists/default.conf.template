@@ -1,10 +1,10 @@
 server {
-        listen ${NGINX_PORT} default_server;
+        listen ${NGINX_PORT};
 
         root ${NGINX_ROOT_DIR};
         index index.php;
         large_client_header_buffers 4 16k;
-
+        server_name ${NGINX_SERVER_NAME};
         location ~ \.php$ {
             fastcgi_keep_conn on;
             fastcgi_pass ${NGINX_PHP_PASS};

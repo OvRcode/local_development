@@ -27,7 +27,7 @@ server {
             fastcgi_pass ${NGINX_PHP_PASS};
             fastcgi_index  index.php;
             fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_read_timeout 180;
+            fastcgi_read_timeout 300;
             include        fastcgi_params;
         }
         location ~ /favicon.ico {

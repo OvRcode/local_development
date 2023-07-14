@@ -5,6 +5,7 @@ freetype-dev \
 libjpeg-turbo-dev \
 libpng-dev \
 ldb-dev \
+imagemagick-dev \
 libldap \
 oniguruma \
 oniguruma-dev \
@@ -15,13 +16,15 @@ libmemcached-dev \
 libxml2-dev  \
 g++ \
 make  \
-autoconf
+autoconf \
+vips-dev \
+php82-pecl-imagick \
+libwebp-dev 
 
-
-RUN docker-php-ext-configure gd  --with-jpeg=/usr/include  --with-freetype=/usr/include  && \
-docker-php-ext-install gd ldap mbstring mysqli pdo_mysql pdo_sqlite zip soap && \
+RUN docker-php-ext-configure gd  --with-freetype --with-webp --with-jpeg  && \
+docker-php-ext-install exif gd ldap mbstring mysqli pdo_mysql pdo_sqlite zip soap && \
 pecl channel-update pecl.php.net && \
-pecl install memcached && docker-php-ext-enable memcached && \
+pecl install memcached vips && docker-php-ext-enable memcached vips && \
 docker-php-source delete
 
 # Setup timezone to Eastern Standard Time, max upload size to 100M and sessions to redis
