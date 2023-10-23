@@ -19,14 +19,14 @@ services:
     volumes:
       - ./templates/lists:/etc/nginx/templates
       - ./ovr_lists:/var/www/html
-  php8.2:
-    build: ./php8.2
+  php8.1:
+    build: ./php8.1
     env_file:
       - lists.env
     volumes:
       - ./ovr_lists:/var/www/html
   web:
-    image: nginx:1.24.0-alpine
+    build: ./nginx  
     env_file:
       - nginx.env
       - wordpress.env
@@ -42,6 +42,7 @@ services:
     volumes:
       - wordpress:/var/www/html
       - ./ovrride/wp-content:/var/www/html/wp-content
+  
   db:
     image: mysql:8.0.33
     restart: always

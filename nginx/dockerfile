@@ -1,0 +1,5 @@
+FROM georgjung/nginx-brotli
+COPY ./gzip.conf /etc/nginx/conf.d/
+COPY ./brotli.conf /etc/nginx/conf.d/
+RUN sed -i '1i load_module /usr/lib/nginx/modules/ngx_http_brotli_filter_module.so;' /etc/nginx/nginx.conf
+RUN sed -i '1i load_module /usr/lib/nginx/modules/ngx_http_brotli_static_module.so;' /etc/nginx/nginx.conf

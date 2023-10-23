@@ -1,6 +1,7 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.1-fpm-alpine
 RUN /usr/local/bin/docker-php-source extract
-RUN apk update && apk upgrade && apk add sqlite-dev \
+RUN apk update && apk upgrade && apk add brotli brotli-libs sqlite-dev \
+git \
 freetype-dev \
 libjpeg-turbo-dev \
 libpng-dev \
@@ -18,7 +19,7 @@ g++ \
 make  \
 autoconf \
 vips-dev \
-php82-pecl-imagick \
+php81-pecl-imagick \
 libwebp-dev 
 
 RUN docker-php-ext-configure gd  --with-freetype --with-webp --with-jpeg  && \
@@ -26,6 +27,14 @@ docker-php-ext-install exif gd ldap mbstring mysqli pdo_mysql pdo_sqlite zip soa
 pecl channel-update pecl.php.net && \
 pecl install memcached vips && docker-php-ext-enable memcached vips && \
 docker-php-source delete
+RUN cd /tmp && \
+git clone https://github.com/kjdev/php-ext-brotli.git  && \
+cd php-ext-brotli && \
+phpize && \
+./configure --with-libbrotli && \
+make && \
+make install && \
+echo "extension=brotli" >> /usr/local/etc/php/conf.d/brotli.ini 
 
 # Setup timezone to Eastern Standard Time, max upload size to 100M and sessions to redis
 RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini  && \
